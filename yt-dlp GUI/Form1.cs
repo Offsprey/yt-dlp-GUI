@@ -16,8 +16,6 @@ namespace yt_dlp_GUI
     public partial class Form1 : Form
     {
         static List<DownloadTask> dlTaskList;
-        bool run = false;
-        
 
         public Form1()
         {
@@ -37,7 +35,7 @@ namespace yt_dlp_GUI
             {
                 backgroundWorker1.CancelAsync();
                 button1.Text = "Start";
-                Thread.Sleep(400);
+                Thread.Sleep(300);
             }
         }
 
@@ -48,10 +46,11 @@ namespace yt_dlp_GUI
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "C:\\Users\\16187\\Downloads\\yt-dlp.exe",
-                    Arguments = dTask.Url,
+                    FileName = "yt-dlp.exe",
+                    Arguments = dTask.Args,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     CreateNoWindow = true
                 }
             };
@@ -73,7 +72,7 @@ namespace yt_dlp_GUI
                     }
                     catch (Exception ex)
                     {
-
+                        dTask.StatusMsg = "Error : " + ex.Message;
                     }
                 }
                 string line = proc.StandardOutput.ReadLine();
@@ -102,7 +101,7 @@ namespace yt_dlp_GUI
             DownloadTask cTask = (DownloadTask)e.UserState;
             foreach (ListViewItem item in listView1.Items)
             {
-                if (item.Text == cTask.Url)
+                if (item.Text == cTask.Args)
                     item.SubItems[1].Text = cTask.StatusMsg;
             }
         }
@@ -149,7 +148,7 @@ namespace yt_dlp_GUI
 
                 foreach (DownloadTask task in dlTaskList)
                 {
-                    if (task.Url == item.Text)
+                    if (task.Args == item.Text)
                         dlTaskList.Remove(task);
             }
                 listView1.Items.Remove(item);
@@ -163,6 +162,32 @@ namespace yt_dlp_GUI
             nItem.Text = textBox1.Text;
             nItem.SubItems.Add("Pending");
             listView1.Items.Add(nItem);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            textBox2.Text = Properties.Settings.Default.DownloadDir;
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.DownloadDir = textBox2.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog1.SelectedPath = textBox2.Text;
+            folderBrowserDialog1.ShowDialog();
+            textBox2.Text = folderBrowserDialog1.SelectedPath;
+            Properties.Settings.Default.DownloadDir = textBox2.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
+        {
+            
+
         }
     }
 }

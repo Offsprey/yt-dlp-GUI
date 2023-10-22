@@ -8,16 +8,18 @@ namespace yt_dlp_GUI
 {
     internal class DownloadTask
     {
-        String url;
+        
         String args;
         String statusMsg;
 
-        public DownloadTask(string url)
+        public DownloadTask(string args)
         {
-            this.url = url;
+            this.args = args;
         }
 
-        public string Url { get => url; set => url = value; }
+        public string Args { get => args; set => args = value; }
         public string StatusMsg { get => statusMsg; set => statusMsg = value; }
+
+
     }
 }
